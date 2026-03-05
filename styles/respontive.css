@@ -191,6 +191,20 @@
   .carousel {
     height: 320px;
   }
+
+  .gap-sm-12 {
+    gap: 12px;
+  }
+
+  .zoom-box {
+    position: absolute;
+    left: unset;
+    top: 3%;
+    right: 3%;
+    width: 100px;
+    height: 100px;
+
+  }
 }
 
 /* ===================================
