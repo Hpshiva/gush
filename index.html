@@ -47,33 +47,90 @@
             </ol>
           </nav>
           <div class="hero-grid">
-            <div class="carousel">
-              <div class="carousel-track">
-                <img src="https://picsum.photos/800/500?1" />
-                <img src="https://picsum.photos/800/500?2" />
-                <img src="https://picsum.photos/800/500?3" />
+            <div class="carousel-wrapper">
+              <div class="d-flex flex-column gap-20">
+                <div class="carousel" id="carousel">
+                  <div class="carousel-track h-100" id="carouselTrack">
+                    <img
+                      class=""
+                      src="https://picsum.photos/800/500?random=1"
+                      id="slide-0"
+                    />
+                    <img
+                      class=""
+                      src="https://picsum.photos/800/500?random=2"
+                      id="slide-1"
+                    />
+                    <img
+                      class=""
+                      src="https://picsum.photos/800/500?random=3"
+                      id="slide-2"
+                    />
+                    <img
+                      class=""
+                      src="https://picsum.photos/800/500?random=4"
+                      id="slide-3"
+                    />
+                    <img
+                      class=""
+                      src="https://picsum.photos/800/500?random=5"
+                      id="slide-4"
+                    />
+                    <img
+                      class=""
+                      src="https://picsum.photos/800/500?random=6"
+                      id="slide-5"
+                    />
+                  </div>
+                  <div class="zoom-lens" id="zoomLens"></div>
+                  <button class="prev" id="prevBtn">←</button>
+                  <button class="next" id="nextBtn">→</button>
+                </div>
+
+                <div
+                  class="carousel-prev d-flex justify-between"
+                  id="thumbnails"
+                >
+                  <div class="active">
+                    <img src="https://picsum.photos/800/500?random=1" />
+                  </div>
+                  <div>
+                    <img src="https://picsum.photos/800/500?random=2" />
+                  </div>
+                  <div>
+                    <img src="https://picsum.photos/800/500?random=3" />
+                  </div>
+                  <div>
+                    <img src="https://picsum.photos/800/500?random=4" />
+                  </div>
+                  <div>
+                    <img src="https://picsum.photos/800/500?random=5" />
+                  </div>
+                  <div>
+                    <img src="https://picsum.photos/800/500?random=6" />
+                  </div>
+                </div>
               </div>
 
-              <button class="prev">‹</button>
-              <button class="next">›</button>
+              <!-- Zoom box lives outside the overflow:hidden carousel -->
+              <div class="zoom-box" id="zoomBox"></div>
             </div>
-
             <div class="hero-text">
               <div>
                 <div class="d-flex gap-10 flex-wrap">
                   <div class="bagage d-flex gap-10">
                     <img src="image/bis.svg" alt="" />
-                    <p>BIS Certified</p>
+                    <p class="fs-sm-14">BIS Certified</p>
                   </div>
 
                   <div class="bagage d-flex gap-10">
                     <img src="image/bis.svg" alt="" />
-                    <p>ISO Certified</p>
+                    <p class="fs-sm-14">ISO Certified</p>
                   </div>
 
                   <div class="bagage d-flex gap-10">
                     <img src="image/bis.svg" alt="" />
-                    <p>CE Certified</p>
+                    <p class="fs-sm-14">CE Certified</p>
                   </div>
                 </div>
                 <h1>Premium HDPE Pipes & Coils for Modern Infrastructure</h1>
@@ -1081,6 +1138,7 @@
     </script>
     <!-- grid auto scroll  -->
 
+    <!-- Versatile moving with click -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const track = document.getElementById("industryTrack");
@@ -1097,6 +1155,96 @@
         prev.onclick = () => {
           track.scrollBy({ left: -move, behavior: "smooth" });
         };
+      });
+    </script>
+    <!-- Versatile moving with click -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const track = document.getElementById("carouselTrack");
+        const slides = track.querySelectorAll("img");
+        const nextBtn = document.getElementById("nextBtn");
+        const prevBtn = document.getElementById("prevBtn");
+        const thumbnails = document
+          .getElementById("thumbnails")
+          .querySelectorAll("div");
+        const carousel = document.getElementById("carousel");
+        const zoomBox = document.getElementById("zoomBox");
+        const zoomLens = document.getElementById("zoomLens");
+
+        let index = 0;
+        const ZOOM_FACTOR = 2.5;
+
+        function updateSlide() {
+          track.style.transform = `translateX(-${index * 100}%)`;
+          thumbnails.forEach((t, i) =>
+            t.classList.toggle("active", i === index),
+          );
+        }
+
+        nextBtn.onclick = () => {
+          index = (index + 1) % slides.length;
+          updateSlide();
+        };
+        prevBtn.onclick = () => {
+          index = (index - 1 + slides.length) % slides.length;
+          updateSlide();
+        };
+
+        thumbnails.forEach((thumb, i) => {
+          thumb.onclick = () => {
+            index = i;
+            updateSlide();
+          };
+        });
+
+        // --- Zoom logic ---
+        carousel.addEventListener("mouseenter", () => {
+          zoomBox.style.display = "block";
+          zoomLens.style.display = "block";
+        });
+
+        carousel.addEventListener("mouseleave", () => {
+          zoomBox.style.display = "none";
+          zoomLens.style.display = "none";
+        });
+
+        carousel.addEventListener("mousemove", (e) => {
+          const rect = carousel.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const w = rect.width;
+          const h = rect.height;
+
+          // Move lens
+          zoomLens.style.left = x + "px";
+          zoomLens.style.top = y + "px";
+
+          // Current slide src
+          const currentImg = slides[index];
+          const src = currentImg.src;
+
+          // Calculate background position
+          const pctX = x / w;
+          const pctY = y / h;
+
+          const zoomW = zoomBox.offsetWidth;
+          const zoomH = zoomBox.offsetHeight;
+
+          const bgSizeW = w * ZOOM_FACTOR;
+          const bgSizeH = h * ZOOM_FACTOR;
+
+          // Center the zoomed region on the cursor
+          const bgX = pctX * bgSizeW - zoomW / 2;
+          const bgY = pctY * bgSizeH - zoomH / 2;
+
+          const clampedX = Math.max(0, Math.min(bgX, bgSizeW - zoomW));
+          const clampedY = Math.max(0, Math.min(bgY, bgSizeH - zoomH));
+
+          zoomBox.style.backgroundImage = `url(${src})`;
+          zoomBox.style.backgroundSize = `${bgSizeW}px ${bgSizeH}px`;
+          zoomBox.style.backgroundPosition = `-${clampedX}px -${clampedY}px`;
+        });
       });
     </script>
   </body>
