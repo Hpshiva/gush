@@ -205,6 +205,10 @@
     height: 100px;
 
   }
+
+  .section {
+    padding: 48px 16px !important;
+  }
 }
 
 /* ===================================
@@ -214,7 +218,13 @@
 
 @media (max-width: 1080px) {
   .section {
-    padding: 80px 60px !important;
+    padding: 80px 60px;
+  }
+
+  .hero-grid {
+
+    gap: 30px;
+
   }
 }
 
@@ -358,6 +368,12 @@
     height: 200px;
 
   }
+
+  .hero {
+    padding: 120px 48px 80px 48px !important;
+  }
+
+
 }
 
 /* ===================================
